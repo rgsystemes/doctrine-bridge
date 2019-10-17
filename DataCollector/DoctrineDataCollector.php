@@ -13,6 +13,7 @@ namespace Symfony\Bridge\Doctrine\DataCollector;
 
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\DBAL\Logging\DebugStack;
+use Doctrine\DBAL\SQLParserUtils;
 use Doctrine\DBAL\Types\ConversionException;
 use Doctrine\DBAL\Types\Type;
 use Symfony\Component\HttpFoundation\Request;
@@ -143,6 +144,10 @@ class DoctrineDataCollector extends DataCollector
                 // Transform the param according to the type
                 $type = $query['types'][$j];
                 if (\is_string($type)) {
+                    if (SQLParserUtils::isCollectionType($type)) {
+                        $type = SQLParserUtils::removeCollectionMarker($type);
+                        $query['params'][$j] = json_encode($param);
+                    }
                     $type = Type::getType($type);
                 }
                 if ($type instanceof Type) {
