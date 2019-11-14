@@ -146,7 +146,8 @@ class DoctrineDataCollector extends DataCollector
                 if (\is_string($type)) {
                     if (SQLParserUtils::isCollectionType($type)) {
                         $type = SQLParserUtils::removeCollectionMarker($type);
-                        $query['params'][$j] = json_encode($param);
+                        $param = json_encode($param);
+                        $query['params'][$j] = $param;
                     }
                     $type = Type::getType($type);
                 }
